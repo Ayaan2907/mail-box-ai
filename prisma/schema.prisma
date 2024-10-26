@@ -15,8 +15,7 @@ model User {
     id          String
     name        String
     email       String   @unique
-    image_url     String?
-    recorded_at DateTime  //recorded in our database
+    image_url   String?
     created_at  String
     updated_at  String
 
