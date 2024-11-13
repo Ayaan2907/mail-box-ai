@@ -1,4 +1,3 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "@/server/db";
 
 //  FIXME: incomplete code, email not getting from clerk
@@ -23,7 +22,7 @@ export const POST = async (req: Request) => {
   try {
     const clerkUser= await req.json();
     const user = {
-      id: clerkUser.data.id,
+      // id: clerkUser.data.id,
       name: `${clerkUser.data.first_name} ${clerkUser.data.last_name}`,
       email: clerkUser.data.email_addresses[0].email_address, 
       image_url: clerkUser.data.image_url,
@@ -31,10 +30,9 @@ export const POST = async (req: Request) => {
       updated_at: clerkUser.data.updated_at.toString(),
     };
 
-    console.log("User", user);
     await db.user.create({
       data: {
-      id: user.id,
+      // id: user.id,
       name: user.name,
       email: user.email,
       image_url: user.image_url,
@@ -43,11 +41,9 @@ export const POST = async (req: Request) => {
       },
     });
 
-    console.log("User Created");
-
     return new Response("User Created", { status: 200 });
   } catch (e: any) {
-    console.error(e);
+    console.error("Error in user creation", e);
     return new Response(`Error: ${e.message}`, { status: 500 });
   }
 };
