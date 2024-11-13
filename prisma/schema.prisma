@@ -20,12 +20,13 @@ model User {
   updated_at               String
   connected_email_accounts EmailAccount[]
 
-  @@index([name])
+  // @@index([name])
 }
 
 model EmailAccount {
-  id           String @id @default(uuid())
+  id           String @id @default(uuid()) 
   user_id      String
+  email        String
   access_token String @unique
   name         String
   user         User   @relation(fields: [user_id], references: [id])

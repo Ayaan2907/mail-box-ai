@@ -22,7 +22,7 @@ export const POST = async (req: Request) => {
   try {
     const clerkUser= await req.json();
     const user = {
-      // id: clerkUser.data.id,
+      id: clerkUser.data.id,
       name: `${clerkUser.data.first_name} ${clerkUser.data.last_name}`,
       email: clerkUser.data.email_addresses[0].email_address, 
       image_url: clerkUser.data.image_url,
@@ -32,7 +32,7 @@ export const POST = async (req: Request) => {
 
     await db.user.create({
       data: {
-      // id: user.id,
+      id: user.id,
       name: user.name,
       email: user.email,
       image_url: user.image_url,
