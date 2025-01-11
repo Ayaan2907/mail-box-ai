@@ -2,10 +2,8 @@
 
 import { auth } from "@clerk/nextjs/server";
 import axios from "axios";
-import { headers } from "next/headers";
-import { AurinkoServiceType, AurinkoAuthTokenResponseType } from "@/types/aurinko";
+import { AurinkoServiceType, AurinkoAuthTokenResponseType } from "@/lib/types";
 
-const AURINKO_API_URL = "https://api.aurinko.io/v1";
 export const getAurinkoUrl = async (serviceType: AurinkoServiceType) => {
   
   const { userId } = auth();
@@ -20,13 +18,13 @@ export const getAurinkoUrl = async (serviceType: AurinkoServiceType) => {
     returnUrl: `${process.env.NEXT_PUBLIC_PROXY_URL_LOCAL}/api/aurinko/callback`,
     responseType: "code",
   });
-  return `${AURINKO_API_URL}/auth/authorize?${urlParams.toString()}`;
+  return `${process.env.AURINKO_PUBLIC_URL}/auth/authorize?${urlParams.toString()}`;
 };
 
 export const getAurinkoAuthToken = async (code: string) => {
   try {
     const res = await axios.post(
-      `${AURINKO_API_URL}/auth/token/${code}`,
+      `${process.env.AURINKO_PUBLIC_URL}/auth/token/${code}`,
       {},
       {
         auth: {
@@ -44,7 +42,7 @@ export const getAurinkoAuthToken = async (code: string) => {
 export const getUserAccountDetails = async (authToken: string) => {
     try {
         
-        const res = await axios.get(`${AURINKO_API_URL}/account`, {
+        const res = await axios.get(`${process.env.AURINKO_PUBLIC_URL}/account`, {
             headers: {
                 "Authorization" : `Bearer ${authToken}`
             }
