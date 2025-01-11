@@ -23,31 +23,47 @@ export const GET = async (req: NextRequest) => {
       return new Response("Unable to get access token", { status: 400 });
     }
 
-    const accountDetails = await getUserAccountDetails(authTokenResponse.accessToken);
+    const accountDetails = await getUserAccountDetails(
+      authTokenResponse.accessToken,
+    );
     if (!accountDetails) {
       return new Response("Unable to get account details", { status: 400 });
     }
-    
-    await db.emailAccount.upsert({
+    /**
+     * aurinko is not providing unique ids for an email
+     * if same email id added twice, a new id is generated
+     * so doing upsert not working, thats why first chicking if mail exist then creating new
+     */
+
+    const existingAccount = await db.emailAccount.findUnique({
       where: {
-        id: authTokenResponse.accountId.toString(),
-      },
-      update: {
-        access_token: authTokenResponse.accessToken,
-      },
-      create: {
-        id: authTokenResponse.accountId.toString(),
-        user_id: userId,
         email: accountDetails.email,
-        access_token: authTokenResponse.accessToken,
-        name: accountDetails.name,
       },
     });
-    console.log("Updated record in the database with account ID:", authTokenResponse);
-    return  new Response("Mail Connected", { status: 200 })
 
+    if (existingAccount) {
+      await db.emailAccount.update({
+        where: {
+          email: accountDetails.email,
+        },
+        data: {
+          access_token: authTokenResponse.accessToken,
+        },
+      });
+    } else {
+      await db.emailAccount.create({
+        data: {
+          id: authTokenResponse.accountId.toString(),
+          user_id: userId,
+          email: accountDetails.email,
+          access_token: authTokenResponse.accessToken,
+          name: accountDetails.name,
+        },
+      });
+    }
+
+    return new Response("Account Connected", { status: 200 });
   } catch (error) {
-    console.error("Error In handeling request", error);
     return new Response("Error In handeling request", { status: 500 });
   }
 };
