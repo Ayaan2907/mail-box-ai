@@ -24,10 +24,11 @@ model User {
 }
 
 model EmailAccount {
-  id           String @id @default(uuid()) 
-  user_id      String
-  email        String
-  access_token String @unique
-  name         String
-  user         User   @relation(fields: [user_id], references: [id])
+  id             String  @id @default(uuid())
+  user_id        String
+  email          String
+  access_token   String  @unique
+  name           String
+  nextDeltaToken String?
+  user           User    @relation(fields: [user_id], references: [id])
 }
