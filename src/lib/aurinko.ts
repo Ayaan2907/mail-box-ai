@@ -12,7 +12,7 @@ export const getAurinkoUrl = async (serviceType: AurinkoServiceType) => {
   }
   //  this is the url to redirect to Aurinko
   const urlParams = new URLSearchParams({
-    clientId: `${process.env.AURINKO_CLIENT_ID}` as string,
+    clientId: process.env.AURINKO_CLIENT_ID as string,
     serviceType,
     scopes: "Mail.Read Mail.ReadWrite Mail.Send Mail.Drafts Mail.All",
     returnUrl: `${process.env.NEXT_PUBLIC_PROXY_URL_LOCAL}/api/aurinko/callback`,
