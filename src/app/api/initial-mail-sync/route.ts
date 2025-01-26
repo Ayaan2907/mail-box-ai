@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/server/db';
-import  Account  from '@/lib/accounts';
+import Account from '@/lib/accounts';
+import {syncEmailsToDatabase} from '@/lib/sync-to-db';
 
 export const POST = async (req: NextRequest) => {
     try {
@@ -24,6 +25,9 @@ export const POST = async (req: NextRequest) => {
         if (!response) {
             return NextResponse.json({ error: "Failed to sync" }, { status: 500 });
         }
+        const { emails, deltaToken } = response;
+        await syncEmailsToDatabase(emails, accountId);
+        console.log(`Synced emails to database`);
 
         await db.emailAccount.update({
             where: {
