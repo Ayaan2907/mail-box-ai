@@ -83,3 +83,10 @@ export interface EmailHeader {
     name: string;
     value: string;
 }
+
+export enum EmailInboxType {
+    inbox = "inbox",
+    sent = "sent",
+    draft = "draft",
+    important = "important",
+}
